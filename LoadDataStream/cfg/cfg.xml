@@ -7,18 +7,24 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
   <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
 
-    <property name="workDirectory" value="work"/>
+    <property name="workDirectory" value="work\"/>
+
+    <property name="sqlSchemas">
+      <list>
+        <value>DEFAULT</value>
+      </list>
+    </property>
 
     <property name="gridLogger">
       <bean class="org.apache.ignite.logger.log4j2.Log4J2Logger">
         <!-- log4j2 configuration file -->
-        <constructor-arg type="java.lang.String" value="ignite-log4j.xml"/>
+        <constructor-arg type="java.lang.String" value="cfg\ignite-log4j.xml"/>
       </bean>
     </property>
 
     <property name="dataStorageConfiguration">
       <bean class="org.apache.ignite.configuration.DataStorageConfiguration">
-        <property name="checkpointFrequency" value="5000"/>
+        <property name="checkpointFrequency" value="30000"/>
         <property name="defaultDataRegionConfiguration">
           <bean class="org.apache.ignite.configuration.DataRegionConfiguration">
             <property name="persistenceEnabled" value="true"/>
@@ -39,58 +45,6 @@
               <constructor-arg type="boolean" value="false"/>
               <constructor-arg type="int" value="10"/>
             </bean>
-          </property>
-
-          <!-- Configure query entities -->
-          <property name="sqlSchema" value="PUBLIC"/>
-          <property name="queryEntities">
-            <list>
-              <bean class="org.apache.ignite.cache.QueryEntity">
-                <property name="tableName" value="TIMEDATA"/>
-                <property name="valueType" value="TimedataValPart"/>
-                <property name="keyType" value="TimedataKeyPart"/>
-
-                <property name="fields">
-                  <map>
-                    <entry key="OBJECT_ID" value="java.lang.Long"/>
-                    <entry key="PARAM_ID" value="java.lang.Long"/>
-                    <entry key="SERIES_TIME" value="java.util.Date"/>
-                    <entry key="VALUE" value="java.lang.Double"/>
-                    <entry key="PERIOD_ID" value="java.lang.String"/>
-                    <entry key="ANALYTIC_ID" value="java.lang.String"/>
-                    <entry key="UNIT_ID" value="java.lang.Long"/>
-                  </map>
-                </property>
-
-                <property name="keyFields">
-                  <set>
-                    <value>OBJECT_ID</value>
-                    <value>PARAM_ID</value>
-                    <value>SERIES_TIME</value>
-                    <value>PERIOD_ID</value>
-                    <value>ANALYTIC_ID</value>
-                  </set>
-                </property>
-
-                <property name="indexes">
-                  <list>
-                    <bean class="org.apache.ignite.cache.QueryIndex">
-                      <constructor-arg value="OBJECT_ID"/>
-                    </bean>
-                    <bean class="org.apache.ignite.cache.QueryIndex">
-                      <constructor-arg>
-                        <list>
-                          <value>SERIES_TIME</value>
-                          <value>PERIOD_ID</value>
-                          <value>ANALYTIC_ID</value>
-                        </list>
-                      </constructor-arg>
-                      <constructor-arg value="SORTED"/>
-                    </bean>
-                  </list>
-                </property>
-              </bean>
-            </list>
           </property>
         </bean>
       </list>

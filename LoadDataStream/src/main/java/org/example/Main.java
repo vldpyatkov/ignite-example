@@ -111,6 +111,18 @@ public class Main {
             ignite.cluster().enableWal("default");
         }
 
+        cache.query(new SqlFieldsQuery("CREATE TABLE DEFAULT.TIMEDATA ("
+                + "OBJECT_ID LONG,"
+                + "PARAM_ID LONG,"
+                + "SERIES_TIME TIMESTAMP,"
+                + "VALUE DOUBLE,"
+                + "PERIOD_ID VARCHAR,"
+                + "ANALYTIC_ID VARCHAR,"
+                + "UNIT_ID LONG,"
+                + "CONSTRAINT timedata_pk PRIMARY KEY (OBJECT_ID,PARAM_ID,SERIES_TIME,PERIOD_ID,ANALYTIC_ID)"
+                + ") WITH \"CACHE_NAME=default,PARALLELISM=" + Runtime.getRuntime().availableProcessors() / 2
+                + ",KEY_TYPE=TimedataKeyPart,VALUE_TYPE=TimedataValPart\"")).getAll();
+
         List res = cache.query(new SqlFieldsQuery("SELECT COUNT(*) FROM TIMEDATA")).getAll();
 
         System.out.println("Rows loaded " + rows.get() + " time " + (System.currentTimeMillis() - startLoad));
